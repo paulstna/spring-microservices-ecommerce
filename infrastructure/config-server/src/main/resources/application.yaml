@@ -9,5 +9,20 @@ spring:
         native:
           search-locations: classpath:/config
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
 server:
   port: 8888
