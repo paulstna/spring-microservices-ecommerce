@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: gateway-server
+  config:
+    import: optional:configserver:http://localhost:8888/
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      access: unrestricted
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: gateway-server
+    description: "Gateway Server Application"
+    version: 1.0.0
+    developer: "paulstna"
+
+logging:
+  level:
+    com:
+      paulstna:
+        gateway_server: DEBUG
