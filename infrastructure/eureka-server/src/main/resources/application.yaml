@@ -12,6 +12,8 @@ management:
   health:
     readinessstate:
       enabled: true
+    livenessstate:
+      enabled: true
   endpoint:
     health:
       probes:

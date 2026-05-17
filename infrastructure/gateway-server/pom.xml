@@ -11,6 +11,7 @@
 	<groupId>com.paulstna</groupId>
 	<artifactId>gateway-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name/>
 	<description/>
 	<url/>
@@ -131,6 +132,16 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<to>
+						<image>paulstna/${project.artifactId}:latest</image>
+					</to>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -36,3 +36,7 @@ logging:
     com:
       paulstna:
         gateway_server: DEBUG
+
+eureka:
+  client:
+    fetch-registry:

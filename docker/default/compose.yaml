@@ -1,0 +1,47 @@
+services:
+  configserver:
+    image: paulstna/config-server:latest
+    container_name: config-server-ms
+    ports:
+      - "8888:8888"
+    healthcheck:
+      test: "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yaml
+      service: microservice-base-config
+
+  eurekaserver:
+    image: paulstna/eureka-server:latest
+    container_name: eureka-server-ms
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    extends:
+      file: common-config.yaml
+      service: microservice-config-server-config
+    environment:
+      SPRING_APPLICATION_NAME: eureka-server
+
+  gatewayserver:
+    image: paulstna/gateway-server:latest
+    container_name: gateway-server-ms
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: gateway-server
+    extends:
+      file: common-config.yaml
+      service: microservice-eureka-server-config
+
+networks:
+  paulstna:
+    driver: "bridge"
