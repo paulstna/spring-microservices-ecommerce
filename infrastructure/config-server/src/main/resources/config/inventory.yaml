@@ -1,7 +1,7 @@
 info:
   app:
-    name: user
-    description: "PaulStna User Service Application"
+    name: inventory
+    description: "PaulStna Inventory Service Application"
     version: "1.0.0"
     developer: "paulstna"
 
