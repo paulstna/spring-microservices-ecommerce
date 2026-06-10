@@ -8,21 +8,26 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "inventory")
+@Table(name = "stock_reservations")
 @Getter
 @Setter
-public class Inventory extends Auditable {
+public class StockReservation extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false, unique = true)
+    private UUID orderId;
+
+    @Column(nullable = false)
     private UUID productId;
 
-    private Integer totalStock;
-    private Integer reservedStock;
-    private Integer availableStock;
+    @Column(nullable = false)
+    private Integer quantity;
+
+    @Enumerated(EnumType.STRING)
+    private StockStatus status;
 
     @Version
     private Long version;
