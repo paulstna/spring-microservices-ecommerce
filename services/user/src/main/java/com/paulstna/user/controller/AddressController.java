@@ -1,7 +1,7 @@
 package com.paulstna.user.controller;
 
-import com.paulstna.user.dto.request.CreateAddressRequest;
-import com.paulstna.user.dto.response.AddressResponse;
+import com.paulstna.user.dto.request.AddressRequestDTO;
+import com.paulstna.user.dto.response.AddressResponseDTO;
 import com.paulstna.user.service.IAddressService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class AddressController {
     private final IAddressService addressService;
 
     @GetMapping
-    public ResponseEntity<List<AddressResponse>> getUserAddresses(
+    public ResponseEntity<List<AddressResponseDTO>> getUserAddresses(
             @RequestHeader("X-paulstna-Correlation-ID") String correlationId,
             @RequestHeader("X-paulstna-User-ID") UUID userId) {
 
@@ -28,7 +28,7 @@ public class AddressController {
     }
 
     @GetMapping(path = "/{addressId}")
-    public ResponseEntity<AddressResponse> getUserAddress(
+    public ResponseEntity<AddressResponseDTO> getUserAddress(
             @RequestHeader("X-paulstna-Correlation-ID") String correlationId,
             @RequestHeader("X-paulstna-User-ID") UUID userId,
             @PathVariable UUID addressId) {
@@ -37,10 +37,10 @@ public class AddressController {
     }
 
     @PostMapping
-    public ResponseEntity<AddressResponse> createUserAddress(
+    public ResponseEntity<AddressResponseDTO> createUserAddress(
             @RequestHeader("X-paulstna-Correlation-ID") String correlationId,
             @RequestHeader("X-paulstna-User-ID") UUID userId,
-            @RequestBody @Valid CreateAddressRequest createAddressRequest) {
+            @RequestBody @Valid AddressRequestDTO createAddressRequest) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -48,17 +48,17 @@ public class AddressController {
     }
 
     @PutMapping(path = "/{addressId}")
-    public ResponseEntity<AddressResponse> updateUserAddress(
+    public ResponseEntity<AddressResponseDTO> updateUserAddress(
             @RequestHeader("X-paulstna-Correlation-ID") String correlationId,
             @RequestHeader("X-paulstna-User-ID") UUID userId,
             @PathVariable UUID addressId,
-            @RequestBody @Valid CreateAddressRequest createAddressRequest) {
+            @RequestBody @Valid AddressRequestDTO createAddressRequest) {
 
         return ResponseEntity.ok().body(addressService.updateAddress(userId, addressId, createAddressRequest));
     }
 
     @PutMapping(path = "/{addressId}/default")
-    public ResponseEntity<AddressResponse> updateUserAddressDefault(
+    public ResponseEntity<AddressResponseDTO> updateUserAddressDefault(
             @RequestHeader("X-paulstna-Correlation-ID") String correlationId,
             @RequestHeader("X-paulstna-User-ID") UUID userId,
             @PathVariable UUID addressId) {

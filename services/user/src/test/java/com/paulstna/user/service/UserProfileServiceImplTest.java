@@ -1,7 +1,7 @@
 package com.paulstna.user.service;
 
-import com.paulstna.user.dto.request.UserProfileRequestDto;
-import com.paulstna.user.dto.response.UserProfileResponse;
+import com.paulstna.user.dto.request.UserProfileRequestDTO;
+import com.paulstna.user.dto.response.UserProfileResponseDTO;
 import com.paulstna.user.exception.ResourceAlreadyExistsException;
 import com.paulstna.user.exception.ResourceNotFoundException;
 import com.paulstna.user.model.UserProfile;
@@ -32,7 +32,7 @@ class UserProfileServiceImplTest {
 
     private UUID userId;
     private UserProfile userProfile;
-    private UserProfileRequestDto requestDto;
+    private UserProfileRequestDTO requestDto;
 
     @BeforeEach
     void setUp() {
@@ -44,15 +44,11 @@ class UserProfileServiceImplTest {
         userProfile.setFirstName("Carlos");
         userProfile.setLastName("Santana");
 
-        requestDto = new UserProfileRequestDto();
+        requestDto = new UserProfileRequestDTO();
         requestDto.setEmail("test@example.com");
         requestDto.setFirstName("Carlos");
         requestDto.setLastName("Santana");
     }
-
-    // ─────────────────────────────────────────────────────────────
-    // getUserProfile
-    // ─────────────────────────────────────────────────────────────
 
     @Test
     void shouldReturnUserProfileWhenUserExists() {
@@ -61,7 +57,7 @@ class UserProfileServiceImplTest {
                 .thenReturn(Optional.of(userProfile));
 
         // Act
-        UserProfileResponse result = userProfileService.getUserProfile(userId);
+        UserProfileResponseDTO result = userProfileService.getUserProfile(userId);
 
         // Assert
         assertThat(result).isNotNull();
@@ -84,10 +80,6 @@ class UserProfileServiceImplTest {
         verify(userProfileRepository).findById(userId);
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // createProfile
-    // ─────────────────────────────────────────────────────────────
-
     @Test
     void shouldCreateUserProfileSuccessfully() {
         // Arrange
@@ -98,7 +90,7 @@ class UserProfileServiceImplTest {
                 .thenReturn(userProfile);
 
         // Act
-        UserProfileResponse result =
+        UserProfileResponseDTO result =
                 userProfileService.createProfile(userId, requestDto);
 
         // Assert
@@ -128,10 +120,6 @@ class UserProfileServiceImplTest {
         verify(userProfileRepository, never()).save(any());
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // updateProfile
-    // ─────────────────────────────────────────────────────────────
-
     @Test
     void shouldUpdateUserProfileSuccessfully() {
         // Arrange
@@ -145,7 +133,7 @@ class UserProfileServiceImplTest {
                 .thenReturn(userProfile);
 
         // Act
-        UserProfileResponse result =
+        UserProfileResponseDTO result =
                 userProfileService.updateProfile(userId, requestDto);
 
         // Assert
@@ -210,7 +198,7 @@ class UserProfileServiceImplTest {
                 .thenReturn(userProfile);
 
         // Act
-        UserProfileResponse result =
+        UserProfileResponseDTO result =
                 userProfileService.updateProfile(userId, requestDto);
 
         // Assert
@@ -219,10 +207,6 @@ class UserProfileServiceImplTest {
 
         verify(userProfileRepository).save(any(UserProfile.class));
     }
-
-    // ─────────────────────────────────────────────────────────────
-    // deleteProfile
-    // ─────────────────────────────────────────────────────────────
 
     @Test
     void shouldDeleteUserProfileSuccessfully() {

@@ -1,21 +1,21 @@
 package com.paulstna.user.service;
 
-import com.paulstna.user.dto.request.CreateAddressRequest;
-import com.paulstna.user.dto.response.AddressResponse;
+import com.paulstna.user.dto.request.AddressRequestDTO;
+import com.paulstna.user.dto.response.AddressResponseDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface IAddressService {
-    List<AddressResponse> getUserAddresses(UUID userId);
+    List<AddressResponseDTO> getUserAddresses(UUID userId);
 
-    AddressResponse getUserAddress(UUID userId, UUID addressId);
+    AddressResponseDTO getUserAddress(UUID userId, UUID addressId);
 
-    AddressResponse createAddress(UUID userId, CreateAddressRequest createAddressRequest);
+    AddressResponseDTO createAddress(UUID userId, AddressRequestDTO createAddressRequest);
 
-    AddressResponse updateAddress(UUID userId, UUID addressId, CreateAddressRequest createAddressRequest);
+    AddressResponseDTO updateAddress(UUID userId, UUID addressId, AddressRequestDTO createAddressRequest);
 
-    AddressResponse setDefaultAddress(UUID userId, UUID addressId);
+    AddressResponseDTO setDefaultAddress(UUID userId, UUID addressId);
 
     void deleteAddress(UUID userId, UUID addressId);
 }

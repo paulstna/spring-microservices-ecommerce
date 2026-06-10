@@ -1,7 +1,7 @@
 package com.paulstna.user.service;
 
-import com.paulstna.user.dto.request.UserProfileRequestDto;
-import com.paulstna.user.dto.response.UserProfileResponse;
+import com.paulstna.user.dto.request.UserProfileRequestDTO;
+import com.paulstna.user.dto.response.UserProfileResponseDTO;
 import com.paulstna.user.exception.ResourceAlreadyExistsException;
 import com.paulstna.user.exception.ResourceNotFoundException;
 import com.paulstna.user.mapper.UserProfileMapper;
@@ -21,13 +21,13 @@ public class UserProfileServiceImpl implements IUserProfileService {
     private final UserProfileRepository userProfileRepository;
 
     @Override
-    public UserProfileResponse getUserProfile(UUID userId) {
+    public UserProfileResponseDTO getUserProfile(UUID userId) {
         return UserProfileMapper
                 .toUserProfileResponse(getUserProfileEntity(userId));
     }
 
     @Override
-    public UserProfileResponse createProfile(UUID userId, UserProfileRequestDto requestDto) {
+    public UserProfileResponseDTO createProfile(UUID userId, UserProfileRequestDTO requestDto) {
         validateEmailUniqueness(requestDto.getEmail(), null);
         UserProfile userProfile = UserProfileMapper
                 .requestToEntity(requestDto, new UserProfile());
@@ -38,7 +38,7 @@ public class UserProfileServiceImpl implements IUserProfileService {
     }
 
     @Override
-    public UserProfileResponse updateProfile(UUID userId, UserProfileRequestDto requestDto) {
+    public UserProfileResponseDTO updateProfile(UUID userId, UserProfileRequestDTO requestDto) {
         validateEmailUniqueness(requestDto.getEmail(), userId);
         UserProfile userProfile = getUserProfileEntity(userId);
         userProfile = UserProfileMapper

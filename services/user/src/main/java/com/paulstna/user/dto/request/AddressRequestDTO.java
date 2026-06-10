@@ -11,31 +11,24 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateAddressRequest {
-
+public class AddressRequestDTO {
     @NotBlank
     @Size(max = 40)
     private String alias;
-
     @NotBlank
     @Size(max = 200)
     private String street;
-
     @NotBlank
     private String city;
-
     @NotBlank
     private String state;
-
     @NotBlank
     private String postalCode;
-
     @NotBlank
     @Size(min = 2, max = 2)
     private String countryCode;
-
     @Size(max = 500)
     private String instructions;
-
+    @Builder.Default
     private boolean isDefault = false;
 }

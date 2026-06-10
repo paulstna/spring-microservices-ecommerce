@@ -1,7 +1,7 @@
 package com.paulstna.user.service;
 
-import com.paulstna.user.dto.request.CreateAddressRequest;
-import com.paulstna.user.dto.response.AddressResponse;
+import com.paulstna.user.dto.request.AddressRequestDTO;
+import com.paulstna.user.dto.response.AddressResponseDTO;
 import com.paulstna.user.exception.ResourceNotFoundException;
 import com.paulstna.user.model.Address;
 import com.paulstna.user.model.UserProfile;
@@ -39,7 +39,7 @@ class AddressServiceImplTest {
     private UserProfile userProfile;
     private Address address;
 
-    private CreateAddressRequest createAddressRequest;
+    private AddressRequestDTO createAddressRequest;
 
     @BeforeEach
     void setUp() {
@@ -56,14 +56,10 @@ class AddressServiceImplTest {
         address.setCity("Quito");
         address.setStreet("Main Street");
 
-        createAddressRequest = new CreateAddressRequest();
+        createAddressRequest = new AddressRequestDTO();
         createAddressRequest.setCity("Quito");
         createAddressRequest.setStreet("Main Street");
     }
-
-    // ─────────────────────────────────────────────────────────────
-    // getUserAddresses
-    // ─────────────────────────────────────────────────────────────
 
     @Test
     void shouldReturnUserAddresses() {
@@ -75,7 +71,7 @@ class AddressServiceImplTest {
                 .thenReturn(List.of(address, secondAddress));
 
         // Act
-        List<AddressResponse> result =
+        List<AddressResponseDTO> result =
                 addressService.getUserAddresses(userId);
 
         // Assert
@@ -92,7 +88,7 @@ class AddressServiceImplTest {
                 .thenReturn(List.of());
 
         // Act
-        List<AddressResponse> result =
+        List<AddressResponseDTO> result =
                 addressService.getUserAddresses(userId);
 
         // Assert
@@ -101,10 +97,6 @@ class AddressServiceImplTest {
         verify(addressRepository).findByUserProfileId(userId);
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // getUserAddress
-    // ─────────────────────────────────────────────────────────────
-
     @Test
     void shouldReturnUserAddress() {
         // Arrange
@@ -112,7 +104,7 @@ class AddressServiceImplTest {
                 .thenReturn(Optional.of(address));
 
         // Act
-        AddressResponse result =
+        AddressResponseDTO result =
                 addressService.getUserAddress(userId, addressId);
 
         // Assert
@@ -138,9 +130,6 @@ class AddressServiceImplTest {
                 .findByUserProfileIdAndId(userId, addressId);
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // createAddress
-    // ─────────────────────────────────────────────────────────────
 
     @Test
     void shouldCreateAddressSuccessfully() {
@@ -152,7 +141,7 @@ class AddressServiceImplTest {
                 .thenReturn(address);
 
         // Act
-        AddressResponse result =
+        AddressResponseDTO result =
                 addressService.createAddress(userId, createAddressRequest);
 
         // Assert
@@ -178,10 +167,6 @@ class AddressServiceImplTest {
         verify(addressRepository, never()).save(any());
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // updateAddress
-    // ─────────────────────────────────────────────────────────────
-
     @Test
     void shouldUpdateAddressSuccessfully() {
         // Arrange
@@ -192,7 +177,7 @@ class AddressServiceImplTest {
                 .thenReturn(address);
 
         // Act
-        AddressResponse result =
+        AddressResponseDTO result =
                 addressService.updateAddress(
                         userId,
                         addressId,
@@ -230,10 +215,6 @@ class AddressServiceImplTest {
         verify(addressRepository, never()).save(any());
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // setDefaultAddress
-    // ─────────────────────────────────────────────────────────────
-
     @Test
     void shouldSetNewDefaultAddressSuccessfully() {
         // Arrange
@@ -247,7 +228,7 @@ class AddressServiceImplTest {
                 .thenReturn(address);
 
         // Act
-        AddressResponse result =
+        AddressResponseDTO result =
                 addressService.setDefaultAddress(userId, addressId);
 
         // Assert
@@ -275,7 +256,7 @@ class AddressServiceImplTest {
                 .thenReturn(address);
 
         // Act
-        AddressResponse result =
+        AddressResponseDTO result =
                 addressService.setDefaultAddress(userId, addressId);
 
         // Assert
@@ -303,7 +284,7 @@ class AddressServiceImplTest {
                 .thenReturn(address);
 
         // Act
-        AddressResponse result =
+        AddressResponseDTO result =
                 addressService.setDefaultAddress(userId, addressId);
 
         // Assert
@@ -331,10 +312,6 @@ class AddressServiceImplTest {
 
         verify(addressRepository, never()).save(any());
     }
-
-    // ─────────────────────────────────────────────────────────────
-    // deleteAddress
-    // ─────────────────────────────────────────────────────────────
 
     @Test
     void shouldDeleteAddressSuccessfully() {

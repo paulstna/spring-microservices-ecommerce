@@ -1,15 +1,15 @@
 package com.paulstna.user.mapper;
 
-import com.paulstna.user.dto.request.UserProfileRequestDto;
-import com.paulstna.user.dto.response.UserProfileResponse;
+import com.paulstna.user.dto.request.UserProfileRequestDTO;
+import com.paulstna.user.dto.response.UserProfileResponseDTO;
 import com.paulstna.user.model.UserProfile;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class UserProfileMapper {
 
-    public UserProfileResponse toUserProfileResponse(UserProfile user) {
-        return UserProfileResponse.builder()
+    public UserProfileResponseDTO toUserProfileResponse(UserProfile user) {
+        return UserProfileResponseDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .firstName(user.getFirstName())
@@ -20,7 +20,7 @@ public class UserProfileMapper {
                 .build();
     }
 
-    public UserProfile requestToEntity(UserProfileRequestDto request, UserProfile user) {
+    public UserProfile requestToEntity(UserProfileRequestDTO request, UserProfile user) {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setFirstName(request.getFirstName());

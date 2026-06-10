@@ -12,24 +12,18 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfileRequestDto {
-
+public class UserProfileRequestDTO {
     @NotBlank
     @Email
     private String email;
-
     @Size(max = 100)
     private String username;
-
     @Size(max = 100)
     private String firstName;
-
     @Size(max = 100)
     private String lastName;
-
     @Pattern(regexp = "\\+?[1-9]\\d{7,14}")
     private String phoneNumber;
-
     @Past
     private LocalDate birthdate;
 }

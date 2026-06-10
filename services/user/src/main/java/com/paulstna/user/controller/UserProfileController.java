@@ -1,7 +1,7 @@
 package com.paulstna.user.controller;
 
-import com.paulstna.user.dto.request.UserProfileRequestDto;
-import com.paulstna.user.dto.response.UserProfileResponse;
+import com.paulstna.user.dto.request.UserProfileRequestDTO;
+import com.paulstna.user.dto.response.UserProfileResponseDTO;
 import com.paulstna.user.service.IUserProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class UserProfileController {
     private final IUserProfileService userProfileService;
 
     @GetMapping(path = "/me")
-    public ResponseEntity<UserProfileResponse> getUserProfile(
+    public ResponseEntity<UserProfileResponseDTO> getUserProfile(
             @RequestHeader("X-paulstna-Correlation-ID") String correlationId,
             @RequestHeader("X-paulstna-User-ID") UUID userId) {
 
@@ -27,10 +27,10 @@ public class UserProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<UserProfileResponse> createUserProfile(
+    public ResponseEntity<UserProfileResponseDTO> createUserProfile(
             @RequestHeader("X-paulstna-Correlation-ID") String correlationId,
             @RequestHeader("X-paulstna-User-ID") UUID userId,
-            @RequestBody @Valid UserProfileRequestDto userProfileRequestDto) {
+            @RequestBody @Valid UserProfileRequestDTO userProfileRequestDto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -38,10 +38,10 @@ public class UserProfileController {
     }
 
     @PutMapping(path = "/me")
-    public ResponseEntity<UserProfileResponse> updateUserProfile(
+    public ResponseEntity<UserProfileResponseDTO> updateUserProfile(
             @RequestHeader("X-paulstna-Correlation-ID") String correlationId,
             @RequestHeader("X-paulstna-User-ID") UUID userId,
-            @RequestBody @Valid UserProfileRequestDto userProfileRequestDto) {
+            @RequestBody @Valid UserProfileRequestDTO userProfileRequestDto) {
 
         return ResponseEntity
                 .ok(userProfileService.updateProfile(userId, userProfileRequestDto));

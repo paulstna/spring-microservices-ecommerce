@@ -24,7 +24,7 @@ public class UserProfile extends Auditable {
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false , unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -39,12 +39,18 @@ public class UserProfile extends Auditable {
     @Column(nullable = false)
     private LocalDate birthDate;
 
+    @Builder.Default
     private String profileImageUrl = "default.png";
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private UserProfileStatus status = UserProfileStatus.ACTIVE;
 
     @OneToMany(mappedBy = "userProfile",
             fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Address> addresses = new ArrayList<>();
+
+    @Version
+    private Long version;
 }

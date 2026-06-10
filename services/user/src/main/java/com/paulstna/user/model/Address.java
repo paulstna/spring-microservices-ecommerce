@@ -1,6 +1,7 @@
 package com.paulstna.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.paulstna.user.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,8 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Address {
+public class Address extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,4 +40,7 @@ public class Address {
 
     @Column(columnDefinition = "TEXT")
     private String instructions;
+
+    @Version
+    private Long version;
 }

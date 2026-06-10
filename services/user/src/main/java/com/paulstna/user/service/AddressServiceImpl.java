@@ -1,7 +1,7 @@
 package com.paulstna.user.service;
 
-import com.paulstna.user.dto.request.CreateAddressRequest;
-import com.paulstna.user.dto.response.AddressResponse;
+import com.paulstna.user.dto.request.AddressRequestDTO;
+import com.paulstna.user.dto.response.AddressResponseDTO;
 import com.paulstna.user.exception.ResourceNotFoundException;
 import com.paulstna.user.mapper.AddressMapper;
 import com.paulstna.user.model.Address;
@@ -22,20 +22,20 @@ public class AddressServiceImpl implements IAddressService {
     private final IUserProfileService userProfileService;
 
     @Override
-    public List<AddressResponse> getUserAddresses(UUID userId) {
+    public List<AddressResponseDTO> getUserAddresses(UUID userId) {
         return addressRepository.findByUserProfileId(userId).stream()
                 .map(AddressMapper::toAddressResponse)
                 .toList();
     }
 
     @Override
-    public AddressResponse getUserAddress(UUID userId, UUID addressId) {
+    public AddressResponseDTO getUserAddress(UUID userId, UUID addressId) {
         Address address = findAddressOrThrow(userId, addressId);
         return AddressMapper.toAddressResponse(address);
     }
 
     @Override
-    public AddressResponse createAddress(UUID userId, CreateAddressRequest createAddressRequest) {
+    public AddressResponseDTO createAddress(UUID userId, AddressRequestDTO createAddressRequest) {
         Address address = AddressMapper.requestToEntity(
                 createAddressRequest,
                 new Address()
@@ -46,7 +46,7 @@ public class AddressServiceImpl implements IAddressService {
     }
 
     @Override
-    public AddressResponse updateAddress(UUID userId, UUID addressId, CreateAddressRequest createAddressRequest) {
+    public AddressResponseDTO updateAddress(UUID userId, UUID addressId, AddressRequestDTO createAddressRequest) {
         Address address = findAddressOrThrow(userId, addressId);
         address = AddressMapper.requestToEntity(createAddressRequest, address);
         return AddressMapper.toAddressResponse(addressRepository.save(address));
@@ -54,7 +54,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Transactional
     @Override
-    public AddressResponse setDefaultAddress(UUID userId, UUID addressId) {
+    public AddressResponseDTO setDefaultAddress(UUID userId, UUID addressId) {
         Address newDefault = findAddressOrThrow(userId, addressId);
 
         addressRepository.findByUserProfileIdAndIsDefaultTrue(userId)
