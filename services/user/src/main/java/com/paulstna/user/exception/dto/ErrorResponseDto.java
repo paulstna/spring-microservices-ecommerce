@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @Builder
-public class ErrorResponseDto {
-    private Instant timestamp;
-    private Integer status;
-    private String message;
+public class ErrorResponseDTO  {
+
+    private String apiPath;
+    private int errorCode;
+    private String errorMessage;
+    private LocalDateTime errorTime;
 }

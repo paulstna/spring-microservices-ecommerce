@@ -1,16 +1,17 @@
 package com.paulstna.inventory.common.exception.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
-@Builder
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class ErrorResponseDTO {
-    private Instant timestamp;
-    private Integer status;
-    private String message;
+
+    private String apiPath;
+    private int errorCode;
+    private String errorMessage;
+    private LocalDateTime errorTime;
 }
