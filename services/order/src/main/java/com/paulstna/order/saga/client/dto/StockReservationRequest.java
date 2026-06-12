@@ -1,0 +1,7 @@
+package com.paulstna.order.saga.client.dto;
+
+import java.util.UUID;
+
+public record StockReservationRequest(
+        UUID productId, Integer quantity, UUID orderId) {
+}

@@ -8,7 +8,8 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "stock_reservations")
+@Table(name = "stock_reservations",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"order_id", "product_id"}))
 @Getter
 @Setter
 public class StockReservation extends Auditable {
@@ -17,7 +18,7 @@ public class StockReservation extends Auditable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private UUID orderId;
 
     @Column(nullable = false)

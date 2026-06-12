@@ -7,5 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface StockReservationRepository extends JpaRepository<StockReservation, UUID> {
-    Optional<StockReservation> findByOrderId(UUID orderId);
+    Optional<StockReservation> findByOrderIdAndProductId(UUID orderId, UUID productId);
 }

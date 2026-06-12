@@ -48,7 +48,7 @@ public class InventoryServiceImpl implements IinventoryService {
         Inventory inventory = getInventoryByProductIdOrThrow(productId);
 
         inventory.setTotalStock(inventory.getTotalStock() + inventoryRequest.getQuantity());
-        inventory.setAvailableStock(inventory.getTotalStock() - inventory.getReservedStock()); // bonus fix
+        inventory.setAvailableStock(inventory.getTotalStock() - inventory.getReservedStock());
         return InventoryMapper.toInventoryResponse(inventoryRepository.save(inventory), product);
     }
 
@@ -71,8 +71,9 @@ public class InventoryServiceImpl implements IinventoryService {
         Product product = productService.getProductByIdOrThrow(stockReservation.getProductId());
         Inventory inventory = getInventoryByProductIdOrThrow(stockReservation.getProductId());
 
-        // Idempotencia: si la orden ya tiene reserva, devolver su estado actual.
-        Optional<StockReservation> existing = reservationRepository.findByOrderId(stockReservation.getOrderId());
+        // Idempotencia por (orderId, productId): si ese ítem de la orden ya está reservado, devolver su estado.
+        Optional<StockReservation> existing = reservationRepository.findByOrderIdAndProductId(
+                stockReservation.getOrderId(), stockReservation.getProductId());
         if (existing.isPresent()) {
             return buildResponse(inventory, product, existing.get().getStatus(), MessageConstants.STOCK_RESERVED);
         }
@@ -103,11 +104,12 @@ public class InventoryServiceImpl implements IinventoryService {
     @Transactional
     @Override
     public StockReservationDTO releaseStock(StockReservationDTO stockReservation) {
-        StockReservation reservation = getReservationByOrderIdOrThrow(stockReservation.getOrderId());
+        StockReservation reservation = getReservationOrThrow(
+                stockReservation.getOrderId(), stockReservation.getProductId());
         Product product = productService.getProductByIdOrThrow(reservation.getProductId());
         Inventory inventory = getInventoryByProductIdOrThrow(reservation.getProductId());
 
-        if (reservation.getStatus() == StockStatus.RELEASED) {          // idempotente
+        if (reservation.getStatus() == StockStatus.RELEASED) {
             return buildResponse(inventory, product, StockStatus.RELEASED, MessageConstants.STOCK_RELEASED);
         }
         if (reservation.getStatus() != StockStatus.RESERVED) {
@@ -127,11 +129,12 @@ public class InventoryServiceImpl implements IinventoryService {
     @Transactional
     @Override
     public StockReservationDTO confirmStock(StockReservationDTO stockReservation) {
-        StockReservation reservation = getReservationByOrderIdOrThrow(stockReservation.getOrderId());
+        StockReservation reservation = getReservationOrThrow(
+                stockReservation.getOrderId(), stockReservation.getProductId());
         Product product = productService.getProductByIdOrThrow(reservation.getProductId());
         Inventory inventory = getInventoryByProductIdOrThrow(reservation.getProductId());
 
-        if (reservation.getStatus() == StockStatus.CONFIRMED) {         // idempotente
+        if (reservation.getStatus() == StockStatus.CONFIRMED) {
             return buildResponse(inventory, product, StockStatus.CONFIRMED, MessageConstants.STOCK_CONFIRMED);
         }
         if (reservation.getStatus() != StockStatus.RESERVED) {
@@ -158,12 +161,13 @@ public class InventoryServiceImpl implements IinventoryService {
     }
 
     private Inventory getInventoryByProductIdOrThrow(UUID productId) {
-        return inventoryRepository.findByProductId(productId).orElseThrow(   // Fix 1
+        return inventoryRepository.findByProductId(productId).orElseThrow(
                 () -> new ResourceNotFoundException("Invalid product id: " + productId));
     }
 
-    private StockReservation getReservationByOrderIdOrThrow(UUID orderId) {
-        return reservationRepository.findByOrderId(orderId).orElseThrow(
-                () -> new ResourceNotFoundException("No reservation found for order id: " + orderId));
+    private StockReservation getReservationOrThrow(UUID orderId, UUID productId) {
+        return reservationRepository.findByOrderIdAndProductId(orderId, productId).orElseThrow(
+                () -> new ResourceNotFoundException(
+                        "No reservation found for order " + orderId + " and product " + productId));
     }
 }
