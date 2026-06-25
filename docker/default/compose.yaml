@@ -64,6 +64,17 @@ services:
         retries: 10
         start_period: 15s
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis-ms
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      
 networks:
   paulstna:
     driver: "bridge"
