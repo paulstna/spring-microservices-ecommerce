@@ -1,4 +1,6 @@
 services:
+
+  # Infrastructure services
   configserver:
     image: paulstna/config-server:latest
     container_name: config-server-ms
@@ -41,28 +43,33 @@ services:
     extends:
       file: common-config.yaml
       service: microservice-eureka-server-config
+
+  # Broker services   
   kafka:
-      image: apache/kafka:4.0.0
-      container_name: kafka-ms
-      ports:
-        - "9092:9092"
-      environment:
-        KAFKA_NODE_ID: 1
-        KAFKA_PROCESS_ROLES: broker,controller
-        KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
-        KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-        KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-        KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-        KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      healthcheck:
-        test: "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"
-        interval: 10s
-        timeout: 5s
-        retries: 10
-        start_period: 15s
+    image: apache/kafka:4.0.0
+    container_name: kafka-ms
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: CONTROLLER://0.0.0.0:9093,INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server kafka:29092 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - paulstna
 
   redis:
     image: redis:7-alpine
@@ -74,7 +81,86 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
+    networks:
+      - paulstna
       
+  # Microservices
+
+  inventory:
+    image: paulstna/inventory:latest
+    container_name: inventory-ms
+    extends:
+      file: common-config.yaml
+      service: microservice-dev-config
+    environment:
+      SPRING_APPLICATION_NAME: inventory
+
+  user:
+    image: paulstna/user:latest
+    container_name: user-ms
+    extends:
+      file: common-config.yaml
+      service: microservice-dev-config
+    environment:
+      SPRING_APPLICATION_NAME: user
+
+  payment:
+    image: paulstna/payment:latest
+    container_name: payment-ms
+    extends:
+      file: common-config.yaml
+      service: microservice-dev-config
+    environment:
+      SPRING_APPLICATION_NAME: payment
+
+  delivery:
+    image: paulstna/delivery:latest
+    container_name: delivery-ms
+    extends:
+      file: common-config.yaml
+      service: microservice-dev-config
+    environment:
+      SPRING_APPLICATION_NAME: delivery
+
+  order:
+    image: paulstna/order:latest
+    container_name: order-ms
+    extends:
+      file: common-config.yaml
+      service: microservice-dev-config
+    environment:
+      SPRING_APPLICATION_NAME: order
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  notification:
+    image: paulstna/notification:latest
+    container_name: notification-ms
+    extends:
+      file: common-config.yaml
+      service: microservice-dev-config
+    environment:
+      SPRING_APPLICATION_NAME: notification
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      kafka:
+        condition: service_healthy
+        
+  cart:
+    image: paulstna/cart:latest
+    container_name: cart-ms
+    extends:
+      file: common-config.yaml
+      service: microservice-dev-config
+    environment:
+      SPRING_APPLICATION_NAME: cart
+      SPRING_DATA_REDIS_HOST: redis
+    depends_on:
+      redis:
+        condition: service_healthy
+
 networks:
   paulstna:
     driver: "bridge"

@@ -11,6 +11,12 @@
         resources:
           limits:
             memory: 700m
+    
+    microservice-dev-config:
+      extends:
+        service: microservice-eureka-server-config
+      environment:
+        SPRING_PROFILES_ACTIVE: dev
 
     microservice-config-server-config:
       extends:

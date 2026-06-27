@@ -10,6 +10,15 @@ build:
 	cd infrastructure/eureka-server  && mvn jib:dockerBuild -q
 	cd infrastructure/gateway-server && mvn jib:dockerBuild -q
 
+	@echo ">>> Building business services..."
+	cd services/inventory    && mvn jib:dockerBuild -q
+	cd services/user         && mvn jib:dockerBuild -q
+	cd services/payment      && mvn jib:dockerBuild -q
+	cd services/delivery     && mvn jib:dockerBuild -q
+	cd services/order        && mvn jib:dockerBuild -q
+	cd services/notification && mvn jib:dockerBuild -q
+	cd services/cart         && mvn jib:dockerBuild -q
+
 # ── Build images and start containers ───────────────────
 up: build
 	docker compose -f $(COMPOSE_FILE) up -d
@@ -21,6 +30,14 @@ start:
 # ── Stop and remove containers ──────────────────────────
 down:
 	docker compose -f $(COMPOSE_FILE) down
+
+# ── Stop and remove containers and volumes ──────────────
+down-v:
+	docker compose -f $(COMPOSE_FILE) down -v
+
+# ── Stop and remove containers, volumes and images ──────
+down-vi:
+	docker compose -f $(COMPOSE_FILE) down -v --rmi all
 
 # ── Follow container logs ───────────────────────────────
 logs:
